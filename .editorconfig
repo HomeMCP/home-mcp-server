@@ -1,0 +1,40 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+indent_size = 4
+
+# Require braces on all control flow statements
+csharp_prefer_braces = true:error
+
+# Do not require 'this.' qualification - standard C# convention omits it
+dotnet_style_qualification_for_field = false:none
+dotnet_style_qualification_for_property = false:none
+dotnet_style_qualification_for_method = false:none
+dotnet_style_qualification_for_event = false:none
+
+# Allman brace style - opening brace on its own line
+csharp_new_line_before_open_brace = all
+
+# Other newline preferences
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+[*.{csproj,props,targets}]
+indent_size = 2
+
+[*.json]
+indent_size = 2
+
+[*.proto]
+indent_size = 2

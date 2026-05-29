@@ -1,0 +1,34 @@
+# Build context for the backend image (repo root).
+# Exclude everything the .NET build does not need.
+
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# The Angular admin client is built by its own image (src/client/Dockerfile)
+src/client/
+
+# Runtime data — never bake into the image
+data/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# VCS / IDE / OS
+.git/
+.gitignore
+.vs/
+.vscode/
+.idea/
+**/*.user
+.DS_Store
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Local secrets / dev overrides
+**/appsettings.Development.json
+**/appsettings.Local.json
+.env

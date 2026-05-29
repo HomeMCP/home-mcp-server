@@ -1,0 +1,25 @@
+<Project>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- Treat warnings as errors in EVERY configuration (not just Release) so that
+         Debug builds catch the same analyzer issues — a developer can't accidentally
+         push code that would fail the Release/CI build. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Applied to every project: coding-standard analyzers + high-performance logging source generator -->
+  <ItemGroup>
+    <PackageReference Include="Workleap.DotNet.CodingStandards">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="stbychkov.AutoLoggerMessage">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

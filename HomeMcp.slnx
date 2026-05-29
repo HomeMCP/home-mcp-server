@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/plugins/">
+    <Project Path="plugins/HomeMcp.Plugin.HomeAssistant/HomeMcp.Plugin.HomeAssistant.csproj" />
+    <Project Path="plugins/HomeMcp.Plugin.Jellyfin/HomeMcp.Plugin.Jellyfin.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/HomeMcp.Application/HomeMcp.Application.csproj" />
+    <Project Path="src/HomeMcp.Contracts/HomeMcp.Contracts.csproj" />
+    <Project Path="src/HomeMcp.Domain/HomeMcp.Domain.csproj" />
+    <Project Path="src/HomeMcp.Infrastructure/HomeMcp.Infrastructure.csproj" />
+    <Project Path="src/HomeMcp.Server/HomeMcp.Server.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HomeMcp.Application.Tests/HomeMcp.Application.Tests.csproj" />
+    <Project Path="tests/HomeMcp.Domain.Tests/HomeMcp.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

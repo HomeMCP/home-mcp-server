@@ -1,0 +1,44 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Production stack — builds and runs Home MCP from this repo's source.
+#
+#   docker compose up --build -d
+#
+# Backend  (gRPC Converse + REST) → host :5201
+# Admin UI (nginx, internal panel) → host :8080
+#
+# Ollama is expected to run on the host (or remote). Override its URL in .env.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: home-mcp-server:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:5201
+      Storage__Sqlite__Path: /app/data/home-mcp.db
+      Llm__OllamaUrl: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      Llm__ChatModel: ${CHAT_MODEL:-gemma4:26b}
+    volumes:
+      - server_data:/app/data
+    ports:
+      - "5201:5201"        # external clients connect here for gRPC Converse
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # reach Ollama on the host
+    restart: unless-stopped
+
+  admin:
+    build:
+      context: ./src/client
+      dockerfile: Dockerfile
+    image: home-mcp-admin:latest
+    depends_on:
+      - server
+    ports:
+      - "8080:8080"        # open the admin panel at http://localhost:8080
+    restart: unless-stopped
+
+volumes:
+  server_data:
