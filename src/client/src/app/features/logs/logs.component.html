@@ -1,0 +1,81 @@
+<div class="logs">
+    <h1>{{ 'logs.title' | translate }}</h1>
+
+    <mat-card class="filter-card">
+        <form [formGroup]="filterForm" class="filter-group">
+            <mat-form-field appearance="outline">
+                <mat-label>{{ 'logs.source.all' | translate }}</mat-label>
+                <mat-select formControlName="source">
+                    <mat-option value="">{{ 'logs.source.all' | translate }}</mat-option>
+                    <mat-option value="application">{{ 'logs.source.application' | translate }}</mat-option>
+                    <mat-option value="plugin">{{ 'logs.source.plugin' | translate }}</mat-option>
+                    <mat-option value="llm">{{ 'logs.source.llm' | translate }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{ 'logs.limit' | translate }}</mat-label>
+                <mat-select formControlName="limit">
+                    <mat-option [value]="50">50</mat-option>
+                    <mat-option [value]="100">100</mat-option>
+                    <mat-option [value]="200">200</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" (click)="refresh()">
+                {{ 'logs.refresh' | translate }}
+            </button>
+        </form>
+    </mat-card>
+
+    @if (loading()) {
+        <div class="center">
+            <mat-spinner diameter="50" />
+        </div>
+    } @else if (logs().length > 0) {
+        <mat-card class="logs-card">
+            <mat-table [dataSource]="logs()" class="logs-table">
+
+                <ng-container matColumnDef="timestamp">
+                    <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
+                    <mat-cell *matCellDef="let log">
+                        {{ log.timestamp | date: 'HH:mm:ss.SSS' }}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="level">
+                    <mat-header-cell *matHeaderCellDef>Level</mat-header-cell>
+                    <mat-cell *matCellDef="let log" [ngClass]="'level-' + log.level">
+                        {{ ('logs.level.' + log.level) | translate }}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="source">
+                    <mat-header-cell *matHeaderCellDef>Source</mat-header-cell>
+                    <mat-cell *matCellDef="let log">
+                        <span class="source-badge">{{ log.sourceId }}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="message">
+                    <mat-header-cell *matHeaderCellDef>Message</mat-header-cell>
+                    <mat-cell *matCellDef="let log">
+                        <span class="message-text" [title]="log.message">
+                            {{ truncate(log.message, 100) }}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns" />
+                <mat-row *matRowDef="let row; columns: displayedColumns;" />
+
+            </mat-table>
+        </mat-card>
+    } @else {
+        <mat-card class="empty-state">
+            <mat-card-content>
+                {{ 'logs.empty' | translate }}
+            </mat-card-content>
+        </mat-card>
+    }
+</div>

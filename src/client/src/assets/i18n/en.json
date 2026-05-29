@@ -1,0 +1,101 @@
+{
+    "nav": {
+        "menu": "Menu",
+        "dashboard": "Dashboard",
+        "plugins": "Plugins",
+        "logs": "Logs",
+        "settings": "Settings"
+    },
+    "header": {
+        "title": "Home MCP",
+        "toggleTheme": "Toggle theme",
+        "toggleLang": "Switch language"
+    },
+    "setup": {
+        "title": "Welcome to Home MCP",
+        "subtitle": "Let's get your server configured",
+        "step": {
+            "admin": "Admin Account",
+            "server": "Server Info",
+            "done": "All set!"
+        },
+        "admin": {
+            "heading": "Create admin account",
+            "password": "Password",
+            "confirmPassword": "Confirm password",
+            "passwordHint": "At least 8 characters",
+            "mismatch": "Passwords do not match"
+        },
+        "server": {
+            "heading": "Server settings",
+            "name": "Server name",
+            "namePlaceholder": "Home MCP",
+            "locale": "Default language",
+            "localeEn": "English",
+            "localeRu": "Russian"
+        },
+        "finish": {
+            "heading": "You're all set!",
+            "body": "Your server is ready. You can configure plugins and explore the dashboard.",
+            "cta": "Go to Dashboard"
+        },
+        "next": "Next",
+        "back": "Back",
+        "complete": "Complete setup",
+        "error": "Setup failed. Please try again."
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "health": "Server health",
+        "uptime": "Uptime",
+        "version": "Version",
+        "activePlugins": "Active plugins",
+        "recentLogs": "Recent logs",
+        "viewAll": "View all"
+    },
+    "plugins": {
+        "title": "Plugins",
+        "empty": "No plugins registered.",
+        "overview": "Overview",
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "error": "Error"
+        },
+        "tools": "Tools",
+        "config": "Configuration",
+        "configSaved": "Configuration saved",
+        "configError": "Failed to save configuration",
+        "save": "Save",
+        "noConfig": "This plugin has no configurable fields.",
+        "required": "Required"
+    },
+    "logs": {
+        "title": "Logs",
+        "empty": "No log entries yet.",
+        "source": {
+            "all": "All",
+            "application": "Application",
+            "plugin": "Plugin",
+            "llm": "LLM"
+        },
+        "level": {
+            "debug": "DEBUG",
+            "information": "INFO",
+            "warning": "WARN",
+            "error": "ERROR",
+            "critical": "CRIT"
+        },
+        "refresh": "Refresh",
+        "limit": "Show"
+    },
+    "common": {
+        "loading": "Loading…",
+        "error": "Something went wrong",
+        "retry": "Retry",
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "close": "Close"
+    }
+}

@@ -1,0 +1,91 @@
+.logs h1 {
+    margin-bottom: 24px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.filter-card {
+    margin-bottom: 20px;
+    background: var(--surface-container);
+}
+
+.filter-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    padding: 16px;
+}
+
+mat-form-field {
+    min-width: 150px;
+    flex: 0 1 auto;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.logs-card {
+    background: var(--surface-container);
+    overflow: auto;
+}
+
+.logs-table {
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+mat-header-cell {
+    background: var(--surface);
+    font-weight: 600;
+    padding: 12px 16px;
+}
+
+mat-cell {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--outline-variant);
+}
+
+mat-row:hover { background: var(--surface); }
+
+.level-error,
+.level-critical {
+    color: var(--error);
+    font-weight: 600;
+}
+
+.level-warning {
+    color: var(--tertiary);
+    font-weight: 600;
+}
+
+.level-information { color: var(--primary); }
+.level-debug { color: var(--outline); }
+
+.source-badge {
+    display: inline-block;
+    background: var(--secondary-container);
+    color: var(--on-secondary-container);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: monospace;
+}
+
+.message-text {
+    color: var(--on-surface);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+}

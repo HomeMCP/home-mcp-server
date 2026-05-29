@@ -1,0 +1,102 @@
+<div class="dashboard">
+    <h1>{{ 'dashboard.title' | translate }}</h1>
+
+    <div class="grid">
+
+        <!-- Health card -->
+        <mat-card class="card">
+            <mat-card-header>
+                <mat-card-title>{{ 'dashboard.health' | translate }}</mat-card-title>
+            </mat-card-header>
+            @if (health() === null) {
+                <mat-card-content class="center">
+                    <mat-spinner diameter="40" />
+                </mat-card-content>
+            } @else if (health()) {
+                <mat-card-content>
+                    <div class="health-grid">
+                        <div class="metric">
+                            <span class="label">{{ 'dashboard.version' | translate }}</span>
+                            <span class="value">{{ health()!.version }}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">{{ 'dashboard.uptime' | translate }}</span>
+                            <span class="value">{{ formatUptime(health()!.uptime) }}</span>
+                        </div>
+                    </div>
+                </mat-card-content>
+            }
+        </mat-card>
+
+        <!-- Plugins card -->
+        <mat-card class="card">
+            <mat-card-header>
+                <mat-card-title>{{ 'dashboard.activePlugins' | translate }}</mat-card-title>
+            </mat-card-header>
+            @if (plugins() === null) {
+                <mat-card-content class="center">
+                    <mat-spinner diameter="40" />
+                </mat-card-content>
+            } @else if (plugins()!.length > 0) {
+                <mat-card-content>
+                    @for (p of plugins(); track p.id) {
+                        <div class="plugin-item">
+                            <div class="plugin-info">
+                                <span class="plugin-name">{{ p.displayName }}</span>
+                                <span class="version">v{{ p.version }}</span>
+                            </div>
+                            <mat-chip [highlighted]="p.status === 'active'">
+                                {{ ('plugins.status.' + p.status) | translate }}
+                            </mat-chip>
+                        </div>
+                    }
+                    <button mat-stroked-button routerLink="/plugins" class="view-all-btn">
+                        {{ 'dashboard.viewAll' | translate }}
+                    </button>
+                </mat-card-content>
+            } @else {
+                <mat-card-content class="empty">
+                    {{ 'plugins.empty' | translate }}
+                </mat-card-content>
+            }
+        </mat-card>
+
+    </div>
+
+    <!-- Logs card -->
+    <mat-card class="card full-width">
+        <mat-card-header>
+            <mat-card-title>{{ 'dashboard.recentLogs' | translate }}</mat-card-title>
+        </mat-card-header>
+        @if (logs() === null) {
+            <mat-card-content class="center">
+                <mat-spinner diameter="40" />
+            </mat-card-content>
+        } @else if (logs()!.length > 0) {
+            <mat-card-content>
+                <mat-list>
+                    @for (log of logs()!.slice(0, 10); track log.timestamp) {
+                        <mat-list-item>
+                            <mat-icon matListItemIcon
+                                      [ngClass]="'log-level-' + log.level">
+                                {{ logIcon(log.level) }}
+                            </mat-icon>
+                            <span matListItemTitle>{{ log.message }}</span>
+                            <span matListItemLine class="log-meta">
+                                {{ log.sourceId }} &bull; {{ log.timestamp | date: 'HH:mm:ss' }}
+                            </span>
+                        </mat-list-item>
+                    }
+                </mat-list>
+                <button mat-stroked-button routerLink="/logs" class="view-all-btn">
+                    {{ 'dashboard.viewAll' | translate }}
+                </button>
+            </mat-card-content>
+        } @else {
+            <mat-card-content class="empty">
+                {{ 'logs.empty' | translate }}
+            </mat-card-content>
+        }
+    </mat-card>
+
+</div>

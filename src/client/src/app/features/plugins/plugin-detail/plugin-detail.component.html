@@ -1,0 +1,136 @@
+@if (loading()) {
+    <div class="center">
+        <mat-spinner diameter="50" />
+    </div>
+} @else if (plugin()) {
+    <div class="detail">
+        <div class="detail-header">
+            <h1>{{ plugin()!.displayName }}</h1>
+            <span class="version">v{{ plugin()!.version }}</span>
+        </div>
+
+        <mat-tab-group>
+
+            <!-- Overview tab -->
+            <mat-tab [label]="'plugins.overview' | translate">
+                <div class="tab-content">
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>{{ plugin()!.displayName }}</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>{{ locale.resolve(plugin()!.descriptions) }}</p>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>{{ 'plugins.tools' | translate }}</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <mat-list>
+                                @for (tool of plugin()!.tools; track tool.name) {
+                                    <mat-list-item class="tool-item">
+                                        <mat-icon matListItemIcon>build</mat-icon>
+                                        <span matListItemTitle>{{ tool.name }}</span>
+                                        <span matListItemLine>{{ tool.description }}</span>
+                                    </mat-list-item>
+                                }
+                            </mat-list>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </mat-tab>
+
+            <!-- Configuration tab -->
+            <mat-tab [label]="'plugins.config' | translate">
+                <div class="tab-content">
+                    @if (plugin()!.configSchema.length > 0) {
+                        <form [formGroup]="configForm" class="config-form">
+                            @for (field of plugin()!.configSchema; track field.key) {
+                                <div class="form-field-wrapper">
+                                    @switch (field.type) {
+                                        @case ('password') {
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>{{ locale.resolve(field.labels) }}</mat-label>
+                                                <input matInput type="password" [formControlName]="field.key" />
+                                                <mat-hint>{{ locale.resolve(field.hints) }}</mat-hint>
+                                                @if (field.required) {
+                                                    <span class="required">{{ 'plugins.required' | translate }}</span>
+                                                }
+                                            </mat-form-field>
+                                        }
+                                        @case ('url') {
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>{{ locale.resolve(field.labels) }}</mat-label>
+                                                <input matInput type="url" [formControlName]="field.key" />
+                                                <mat-hint>{{ locale.resolve(field.hints) }}</mat-hint>
+                                                @if (field.required) {
+                                                    <span class="required">{{ 'plugins.required' | translate }}</span>
+                                                }
+                                            </mat-form-field>
+                                        }
+                                        @case ('integer') {
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>{{ locale.resolve(field.labels) }}</mat-label>
+                                                <input matInput type="number" [formControlName]="field.key" />
+                                                <mat-hint>{{ locale.resolve(field.hints) }}</mat-hint>
+                                                @if (field.required) {
+                                                    <span class="required">{{ 'plugins.required' | translate }}</span>
+                                                }
+                                            </mat-form-field>
+                                        }
+                                        @case ('boolean') {
+                                            <div class="checkbox-field">
+                                                <mat-checkbox [formControlName]="field.key">
+                                                    {{ locale.resolve(field.labels) }}
+                                                </mat-checkbox>
+                                                <p class="field-hint">{{ locale.resolve(field.hints) }}</p>
+                                            </div>
+                                        }
+                                        @case ('select') {
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>{{ locale.resolve(field.labels) }}</mat-label>
+                                                <mat-select [formControlName]="field.key">
+                                                    @for (opt of field.options ?? []; track opt) {
+                                                        <mat-option [value]="opt">{{ opt }}</mat-option>
+                                                    }
+                                                </mat-select>
+                                                <mat-hint>{{ locale.resolve(field.hints) }}</mat-hint>
+                                                @if (field.required) {
+                                                    <span class="required">{{ 'plugins.required' | translate }}</span>
+                                                }
+                                            </mat-form-field>
+                                        }
+                                        @default {
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>{{ locale.resolve(field.labels) }}</mat-label>
+                                                <input matInput [formControlName]="field.key" />
+                                                <mat-hint>{{ locale.resolve(field.hints) }}</mat-hint>
+                                                @if (field.required) {
+                                                    <span class="required">{{ 'plugins.required' | translate }}</span>
+                                                }
+                                            </mat-form-field>
+                                        }
+                                    }
+                                </div>
+                            }
+                            <div class="form-actions">
+                                <button mat-raised-button color="primary" (click)="saveConfig()">
+                                    {{ 'plugins.save' | translate }}
+                                </button>
+                            </div>
+                        </form>
+                    } @else {
+                        <mat-card class="empty-config">
+                            <mat-card-content>
+                                {{ 'plugins.noConfig' | translate }}
+                            </mat-card-content>
+                        </mat-card>
+                    }
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    </div>
+}

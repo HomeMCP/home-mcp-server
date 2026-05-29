@@ -1,0 +1,55 @@
+<div class="plugins">
+    <h1>{{ 'plugins.title' | translate }}</h1>
+
+    @if (loading()) {
+        <div class="center">
+            <mat-spinner diameter="50" />
+        </div>
+    } @else if (plugins()!.length > 0) {
+        @for (p of plugins(); track p.id) {
+            <mat-card class="plugin-card">
+                <mat-card-header>
+                    <div class="header-row">
+                        <div>
+                            <mat-card-title>{{ p.displayName }}</mat-card-title>
+                            <mat-card-subtitle>{{ p.id }}</mat-card-subtitle>
+                        </div>
+                        <div class="status-badge">
+                            <mat-chip [highlighted]="p.status === 'active'">
+                                {{ ('plugins.status.' + p.status) | translate }}
+                            </mat-chip>
+                        </div>
+                    </div>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <p>{{ locale.resolve(p.descriptions) }}</p>
+
+                    <div class="meta-section">
+                        <span class="meta-label">{{ 'plugins.tools' | translate }}</span>
+                        <div class="tools-list">
+                            @for (tool of p.tools.slice(0, 5); track tool.name) {
+                                <mat-chip>{{ tool.name }}</mat-chip>
+                            }
+                            @if (p.tools.length > 5) {
+                                <mat-chip class="more">+{{ p.tools.length - 5 }}</mat-chip>
+                            }
+                        </div>
+                    </div>
+                </mat-card-content>
+
+                <mat-card-actions>
+                    <button mat-stroked-button [routerLink]="['/plugins', p.id]">
+                        {{ 'plugins.config' | translate }}
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        }
+    } @else {
+        <mat-card class="empty-state">
+            <mat-card-content>
+                {{ 'plugins.empty' | translate }}
+            </mat-card-content>
+        </mat-card>
+    }
+</div>

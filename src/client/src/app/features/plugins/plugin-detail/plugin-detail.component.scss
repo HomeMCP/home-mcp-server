@@ -1,0 +1,73 @@
+.center {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.detail-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .version {
+        font-size: 0.875rem;
+        color: var(--on-surface-variant);
+    }
+}
+
+mat-tab-group { margin-top: 20px; }
+
+.tab-content {
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 500px;
+}
+
+.form-field-wrapper { width: 100%; }
+
+mat-form-field { width: 100%; }
+
+.checkbox-field { padding: 12px 0; }
+
+.field-hint {
+    font-size: 0.75rem;
+    color: var(--on-surface-variant);
+    margin-top: 4px;
+}
+
+.required {
+    font-size: 0.75rem;
+    color: var(--error);
+    margin-left: 8px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 12px;
+}
+
+.empty-config {
+    background: var(--surface-container);
+    text-align: center;
+    padding: 40px;
+    color: var(--on-surface-variant);
+}
+
+.tool-item { border-bottom: 1px solid var(--outline-variant); }
+.tool-item:last-child { border-bottom: none; }

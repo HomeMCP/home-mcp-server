@@ -1,0 +1,307 @@
+// ── Material 3 Light Palette ───────────────────────────────────────────────
+:root,
+[data-theme="light"] {
+  --primary: #1f51ba;
+  --on-primary: #ffffff;
+  --primary-container: #e0e7ff;
+  --on-primary-container: #0d1b57;
+
+  --secondary: #555f7d;
+  --on-secondary: #ffffff;
+  --secondary-container: #d9e3ff;
+  --on-secondary-container: #0f1934;
+
+  --tertiary: #b2441a;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #ffdcc9;
+  --on-tertiary-container: #3d0a00;
+
+  --error: #d32f2f;
+  --on-error: #ffffff;
+  --error-container: #ffdedc;
+  --on-error-container: #410e0b;
+
+  --background: #fafbff;
+  --on-background: #1a1b25;
+  --surface: #fffbfe;
+  --on-surface: #1a1b25;
+  --surface-dim: #ddd9e5;
+  --surface-bright: #fffbfe;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f7f2fa;
+  --surface-container: #f1eff7;
+  --surface-container-high: #ebe9f1;
+  --surface-container-highest: #e5e2eb;
+
+  --outline: #49454f;
+  --outline-variant: #cac4d0;
+  --scrim: #000000;
+  --inverse-surface: #313034;
+  --inverse-on-surface: #f5eff7;
+}
+
+// ── Material 3 Dark Palette ────────────────────────────────────────────────
+[data-theme="dark"] {
+  --primary: #cde7ff;
+  --on-primary: #003087;
+  --primary-container: #0d47a1;
+  --on-primary-container: #e0e7ff;
+
+  --secondary: #bdc7e8;
+  --on-secondary: #253050;
+  --secondary-container: #3d4966;
+  --on-secondary-container: #d9e3ff;
+
+  --tertiary: #ffb59f;
+  --on-tertiary: #600b00;
+  --tertiary-container: #8d3821;
+  --on-tertiary-container: #ffdcc9;
+
+  --error: #ff8a80;
+  --on-error: #5f0000;
+  --error-container: #9c0006;
+  --on-error-container: #ffdedc;
+
+  --background: #1a1b25;
+  --on-background: #e5e2eb;
+  --surface: #131619;
+  --on-surface: #e5e2eb;
+  --surface-dim: #131619;
+  --surface-bright: #39393f;
+  --surface-container-lowest: #0e0f14;
+  --surface-container-low: #1a1d23;
+  --surface-container: #1e2127;
+  --surface-container-high: #29272e;
+  --surface-container-highest: #34323a;
+
+  --outline: #9a9ba1;
+  --outline-variant: #49454f;
+  --scrim: #000000;
+  --inverse-surface: #e5e2eb;
+  --inverse-on-surface: #313034;
+}
+
+// ── Global styles ─────────────────────────────────────────────────────────
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--on-background);
+  background-color: var(--background);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  color: var(--on-background);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 0;
+  color: var(--on-surface-variant, var(--on-background));
+}
+
+// ── Material overrides ─────────────────────────────────────────────────────
+.mat-mdc-toolbar {
+  background-color: var(--surface) !important;
+  color: var(--on-surface) !important;
+  border-bottom: 1px solid var(--outline-variant);
+
+  .mat-toolbar-row {
+    height: 64px;
+  }
+}
+
+.mat-mdc-card {
+  background-color: var(--surface) !important;
+  color: var(--on-surface) !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-label {
+  color: var(--on-surface-variant) !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  padding-bottom: 1.25rem !important;
+}
+
+// Input focus state
+.mat-mdc-form-field.mat-focused {
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent !important;
+  }
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button {
+  text-transform: none !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-raised-button {
+  background-color: var(--primary) !important;
+  color: var(--on-primary) !important;
+
+  &:not([disabled]):hover {
+    background-color: var(--primary) !important;
+    opacity: 0.92;
+  }
+}
+
+.mat-mdc-stroked-button {
+  color: var(--primary) !important;
+  border-color: var(--outline-variant) !important;
+
+  &:not([disabled]):hover {
+    background-color: var(--primary) !important;
+    opacity: 0.08;
+  }
+}
+
+.mat-mdc-icon-button {
+  color: var(--on-surface) !important;
+}
+
+.mat-mdc-list-item {
+  color: var(--on-surface) !important;
+}
+
+.mat-mdc-tab {
+  color: var(--on-surface) !important;
+}
+
+.mat-mdc-tab-header-pagination-control {
+  color: var(--on-surface) !important;
+}
+
+.mat-mdc-tab-labels {
+  background-color: var(--surface-container) !important;
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.mat-mdc-select-panel {
+  background-color: var(--surface) !important;
+
+  .mat-mdc-option {
+    color: var(--on-surface) !important;
+  }
+}
+
+.mat-mdc-chip {
+  background-color: var(--secondary-container) !important;
+  color: var(--on-secondary-container) !important;
+}
+
+.mat-mdc-chip.mat-mdc-standard-chip.mat-mdc-chip-highlighted {
+  background-color: var(--primary-container) !important;
+  color: var(--on-primary-container) !important;
+}
+
+.mat-mdc-dialog-container {
+  background-color: var(--surface) !important;
+}
+
+.mat-mdc-snack-bar-container {
+  background-color: var(--inverse-surface) !important;
+  color: var(--inverse-on-surface) !important;
+}
+
+.mdc-text-field__input {
+  color: var(--on-surface) !important;
+  caret-color: var(--primary);
+
+  &::placeholder {
+    color: var(--on-surface-variant) !important;
+  }
+}
+
+.mdc-notched-outline__leading,
+.mdc-notched-outline__notch,
+.mdc-notched-outline__trailing {
+  border-color: var(--outline-variant) !important;
+}
+
+.mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--focused .mdc-notched-outline__notch,
+.mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: var(--primary) !important;
+}
+
+// ── Utility classes ───────────────────────────────────────────────────────
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--on-surface-variant);
+}
+
+.gap-small {
+  gap: 8px;
+}
+
+.gap-medium {
+  gap: 16px;
+}
+
+.gap-large {
+  gap: 24px;
+}
+
+// ── Scrollbar ──────────────────────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--outline-variant);
+  border-radius: 4px;
+
+  &:hover {
+    background-color: var(--outline);
+  }
+}

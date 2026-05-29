@@ -1,0 +1,104 @@
+<div class="setup-wrapper">
+    <mat-card class="setup-card">
+        <mat-card-header>
+            <mat-card-title>{{ 'setup.title' | translate }}</mat-card-title>
+            <mat-card-subtitle>{{ 'setup.subtitle' | translate }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <mat-stepper linear>
+
+                <!-- Admin step -->
+                <mat-step [stepControl]="adminForm" [editable]="!loading()">
+                    <ng-template matStepLabel>{{ 'setup.step.admin' | translate }}</ng-template>
+
+                    <form [formGroup]="adminForm" class="form-group">
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{ 'setup.admin.password' | translate }}</mat-label>
+                            <input matInput type="password" formControlName="password" />
+                            <mat-hint>{{ 'setup.admin.passwordHint' | translate }}</mat-hint>
+                            @if (adminForm.get('password')?.hasError('minlength')) {
+                                <mat-error>{{ 'setup.admin.passwordHint' | translate }}</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{ 'setup.admin.confirmPassword' | translate }}</mat-label>
+                            <input matInput type="password" formControlName="confirmPassword" />
+                            @if (adminForm.hasError('passwordMismatch')) {
+                                <mat-error>{{ 'setup.admin.mismatch' | translate }}</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <div class="form-actions">
+                            <button mat-raised-button matStepperNext [disabled]="!adminForm.valid">
+                                {{ 'setup.next' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </mat-step>
+
+                <!-- Server step -->
+                <mat-step [stepControl]="serverForm" [editable]="!loading()">
+                    <ng-template matStepLabel>{{ 'setup.step.server' | translate }}</ng-template>
+
+                    <form [formGroup]="serverForm" class="form-group">
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{ 'setup.server.name' | translate }}</mat-label>
+                            <input matInput formControlName="serverName" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{ 'setup.server.locale' | translate }}</mat-label>
+                            <mat-select formControlName="locale">
+                                <mat-option value="en-US">{{ 'setup.server.localeEn' | translate }}</mat-option>
+                                <mat-option value="ru-RU">{{ 'setup.server.localeRu' | translate }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <div class="form-actions">
+                            <button mat-stroked-button matStepperPrevious>
+                                {{ 'setup.back' | translate }}
+                            </button>
+                            <button mat-raised-button matStepperNext [disabled]="!serverForm.valid">
+                                {{ 'setup.next' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </mat-step>
+
+                <!-- Finish step -->
+                <mat-step [editable]="!loading()">
+                    <ng-template matStepLabel>{{ 'setup.step.done' | translate }}</ng-template>
+
+                    <div class="finish-content">
+                        <mat-card class="finish-card">
+                            <mat-card-header>
+                                <mat-card-title>{{ 'setup.finish.heading' | translate }}</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <p>{{ 'setup.finish.body' | translate }}</p>
+                            </mat-card-content>
+                        </mat-card>
+
+                        <div class="form-actions">
+                            <button mat-stroked-button matStepperPrevious>
+                                {{ 'setup.back' | translate }}
+                            </button>
+                            <button mat-raised-button color="primary"
+                                    (click)="complete()"
+                                    [disabled]="loading()">
+                                @if (loading()) {
+                                    <mat-spinner diameter="20" />
+                                } @else {
+                                    {{ 'setup.complete' | translate }}
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </mat-step>
+
+            </mat-stepper>
+        </mat-card-content>
+    </mat-card>
+</div>

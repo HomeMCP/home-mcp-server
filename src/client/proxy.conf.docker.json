@@ -1,0 +1,12 @@
+{
+  "/admin": {
+    "target": "http://server:5201",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api": {
+    "target": "http://server:5201",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

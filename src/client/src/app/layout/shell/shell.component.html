@@ -1,0 +1,58 @@
+<mat-sidenav-container class="shell-container">
+
+    <mat-sidenav
+        class="sidenav"
+        mode="side"
+        [opened]="sidenavOpen()"
+        fixedInViewport>
+
+        <div class="sidenav-header">
+            <mat-icon class="brand-icon">home</mat-icon>
+            <span class="brand-name">{{ 'header.title' | translate }}</span>
+        </div>
+
+        <mat-nav-list>
+            @for (item of navItems; track item.path) {
+                <a mat-list-item
+                   [routerLink]="item.path"
+                   routerLinkActive="nav-active"
+                   [routerLinkActiveOptions]="{ exact: item.path === 'dashboard' }">
+                    <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                    <span matListItemTitle>{{ item.labelKey | translate }}</span>
+                </a>
+            }
+        </mat-nav-list>
+
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-content">
+
+        <mat-toolbar class="top-bar">
+            <button mat-icon-button
+                    (click)="toggleSidenav()"
+                    [matTooltip]="'nav.menu' | translate">
+                <mat-icon>menu</mat-icon>
+            </button>
+
+            <span class="toolbar-spacer"></span>
+
+            <button mat-icon-button
+                    (click)="theme.toggle()"
+                    [matTooltip]="'header.toggleTheme' | translate">
+                <mat-icon>{{ themeIcon() }}</mat-icon>
+            </button>
+
+            <button mat-icon-button
+                    (click)="toggleLocale()"
+                    [matTooltip]="'header.toggleLang' | translate">
+                <span class="lang-badge">{{ locale.locale().toUpperCase() }}</span>
+            </button>
+        </mat-toolbar>
+
+        <div class="page-content">
+            <router-outlet />
+        </div>
+
+    </mat-sidenav-content>
+
+</mat-sidenav-container>

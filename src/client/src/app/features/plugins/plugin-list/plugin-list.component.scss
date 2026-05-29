@@ -1,0 +1,72 @@
+.plugins h1 {
+    margin-bottom: 24px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.plugin-card {
+    margin-bottom: 16px;
+    background: var(--surface-container);
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+mat-card-title { font-size: 1.25rem; }
+
+mat-card-subtitle {
+    font-size: 0.875rem;
+    font-family: monospace;
+    color: var(--on-surface-variant);
+}
+
+.status-badge { flex-shrink: 0; }
+
+.meta-section {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--outline-variant);
+}
+
+.meta-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    margin-bottom: 8px;
+}
+
+.tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tools-list mat-chip { font-size: 0.8rem; }
+
+.tools-list .more {
+    background: var(--tertiary-container);
+    color: var(--on-tertiary-container);
+}
+
+mat-card-actions {
+    justify-content: flex-end;
+    padding: 12px 16px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+}

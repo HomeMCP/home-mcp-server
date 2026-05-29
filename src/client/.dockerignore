@@ -1,0 +1,11 @@
+# Build context for the Angular admin image (src/client).
+node_modules/
+dist/
+.angular/
+.git/
+.vscode/
+.idea/
+Dockerfile
+.dockerignore
+*.log
+.DS_Store
