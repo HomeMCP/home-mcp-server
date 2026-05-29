@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeMcp.Domain\HomeMcp.Domain.csproj" />
+    <ProjectReference Include="..\HomeMcp.Application\HomeMcp.Application.csproj" />
+    <ProjectReference Include="..\HomeMcp.Infrastructure\HomeMcp.Infrastructure.csproj" />
+    <ProjectReference Include="..\HomeMcp.Contracts\HomeMcp.Contracts.csproj" />
+    <ProjectReference Include="..\..\plugins\HomeMcp.Plugin.Jellyfin\HomeMcp.Plugin.Jellyfin.csproj" />
+    <ProjectReference Include="..\..\plugins\HomeMcp.Plugin.HomeAssistant\HomeMcp.Plugin.HomeAssistant.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
+  </ItemGroup>
+
+</Project>
