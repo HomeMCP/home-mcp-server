@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\HomeMcp.Domain\HomeMcp.Domain.csproj" />
+    <ProjectReference Include="..\..\src\HomeMcp.Application\HomeMcp.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+</Project>
