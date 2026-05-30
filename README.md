@@ -175,6 +175,35 @@ Create `payload.json`:
 grpcurl -insecure -d @ localhost:5201 home_mcp.v1.Assistant/Converse < payload.json
 ```
 
+or
+
+```bash
+grpcurl -insecure -d @ localhost:5201 home_mcp.v1.Assistant/Converse <<EOF
+{
+  "hello": {
+    "device_id": "YOUR_DEVICE_ID",
+    "device_token": "YOUR_DEVICE_TOKEN",
+    "client_version": "1.0.0",
+    "capabilities": {
+      "stt": false,
+      "tts": true,
+      "audio_playback": true,
+      "media_player": true,
+      "display": false,
+      "wake_word": false
+    },
+    "locale": "en-US"
+  }
+}
+{
+  "text": {
+    "session_id": "YOUR_SESSION_ID",
+    "text": "Play 50 Cent In Da Club"
+  }
+}
+EOF
+```
+
 ### 5d. Heredoc form (bash/zsh only)
 
 ```bash
