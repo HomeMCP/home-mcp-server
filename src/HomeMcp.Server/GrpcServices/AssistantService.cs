@@ -4,6 +4,7 @@ using HomeMcp.Application.Sessions.Commands.ProcessTurn;
 using HomeMcp.Application.Sessions.Commands.StartSession;
 using HomeMcp.Contracts.V1;
 using HomeMcp.Domain.Devices;
+using HomeMcp.Server.Admin;
 using AppOrch = HomeMcp.Application.Orchestration;
 
 namespace HomeMcp.Server.GrpcServices;
@@ -17,6 +18,7 @@ public sealed class AssistantService : Assistant.AssistantBase
     private const string CodeSessionRequired = "session.required";
     private const string CodeHelloMissingDeviceId = "hello.missing_device_id";
     private const string CodeHelloUnknownDevice = "hello.unknown_device";
+    private const string CodeHelloInvalidToken = "hello.invalid_token";
 
     private readonly StartSessionCommandHandler _startSession;
     private readonly ProcessTurnCommandHandler _processTurn;
@@ -94,6 +96,13 @@ public sealed class AssistantService : Assistant.AssistantBase
         }
 
         var device = deviceMaybe.Value;
+
+        if (!CryptoHelper.Verify(hello.DeviceToken, device.TokenHash))
+        {
+            _logger.LogWarning("Invalid token for device {DeviceId}", hello.DeviceId);
+            await responseStream.WriteAsync(MakeError(CodeHelloInvalidToken, "Invalid device token."), ct);
+            return null;
+        }
 
         var startResult = await _startSession.HandleAsync(
             new StartSessionCommand(device.PrimaryUserId.Value, device.Id.Value),

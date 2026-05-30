@@ -39,6 +39,20 @@ public sealed class AdminController(SetupState setup) : ControllerBase
 
         return Ok(new { ok = true });
     }
+
+    // Generates a one-time 6-character PIN a device must present at POST /api/v1/pair.
+    // PIN expires after 10 minutes. Only one outstanding PIN exists at a time.
+    [HttpPost("pairing/pin")]
+    public IActionResult GeneratePairingPin()
+    {
+        if (!setup.IsComplete)
+        {
+            return StatusCode(503, new { error = "Server setup not complete. Run POST /admin/setup/init first." });
+        }
+
+        var pin = setup.GeneratePairingPin();
+        return Ok(new { pin, expiresInSeconds = 600 });
+    }
 }
 
 public sealed record SetupInitRequest(

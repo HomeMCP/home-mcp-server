@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 
 namespace HomeMcp.Server.Admin;
@@ -7,10 +6,16 @@ namespace HomeMcp.Server.Admin;
 public sealed class SetupState
 {
     private readonly string _filePath;
+    private readonly TimeProvider _timeProvider;
     private SetupData _data;
 
-    public SetupState(IConfiguration configuration)
+    // In-memory only: single outstanding pairing PIN. Wiped after use or expiry.
+    private string? _pairingPin;
+    private DateTimeOffset _pairingPinExpiry;
+
+    public SetupState(IConfiguration configuration, TimeProvider timeProvider)
     {
+        _timeProvider = timeProvider;
         var dataDir = Path.GetDirectoryName(
             Path.GetFullPath(configuration["Storage:Sqlite:Path"] ?? "./data/home-mcp.db"))!;
         _filePath = Path.Combine(dataDir, "setup.json");
@@ -23,7 +28,7 @@ public sealed class SetupState
 
     public void Complete(string serverName, string defaultLocale, string password)
     {
-        _data = new SetupData(true, serverName, defaultLocale, HashPassword(password));
+        _data = new SetupData(true, serverName, defaultLocale, CryptoHelper.Hash(password));
         Save();
     }
 
@@ -34,33 +39,43 @@ public sealed class SetupState
             return false;
         }
 
-        // Format: <base64-salt>:<base64-hash>
-        var parts = _data.AdminPasswordHash.Split(':');
-        if (parts.Length != 2)
+        return CryptoHelper.Verify(password, _data.AdminPasswordHash);
+    }
+
+    // Generates a 6-character alphanumeric PIN, valid for 10 minutes.
+    // Replaces any existing outstanding PIN.
+    public string GeneratePairingPin()
+    {
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        Span<byte> buf = stackalloc byte[6];
+        RandomNumberGenerator.Fill(buf);
+        _pairingPin = new string([.. buf.ToArray().Select(b => chars[b % chars.Length])]);
+        _pairingPinExpiry = _timeProvider.GetUtcNow().AddMinutes(10);
+        return _pairingPin;
+    }
+
+    // Returns true and clears the PIN if it matches and hasn't expired.
+    public bool VerifyAndConsumePairingPin(string? pin)
+    {
+        if (string.IsNullOrWhiteSpace(pin) || _pairingPin is null)
         {
             return false;
         }
 
-        var salt = Convert.FromBase64String(parts[0]);
-        var expected = Convert.FromBase64String(parts[1]);
-        var actual = Pbkdf2(password, salt);
-        return CryptographicOperations.FixedTimeEquals(actual, expected);
-    }
+        if (_timeProvider.GetUtcNow() > _pairingPinExpiry)
+        {
+            _pairingPin = null;
+            return false;
+        }
 
-    private static string HashPassword(string password)
-    {
-        var salt = RandomNumberGenerator.GetBytes(16);
-        var hash = Pbkdf2(password, salt);
-        return $"{Convert.ToBase64String(salt)}:{Convert.ToBase64String(hash)}";
-    }
+        var valid = string.Equals(_pairingPin, pin.Trim().ToUpperInvariant(), StringComparison.Ordinal);
+        if (valid)
+        {
+            _pairingPin = null;
+        }
 
-    private static byte[] Pbkdf2(string password, byte[] salt) =>
-        Rfc2898DeriveBytes.Pbkdf2(
-            Encoding.UTF8.GetBytes(password),
-            salt,
-            iterations: 200_000,
-            HashAlgorithmName.SHA256,
-            outputLength: 32);
+        return valid;
+    }
 
     private SetupData Load()
     {
