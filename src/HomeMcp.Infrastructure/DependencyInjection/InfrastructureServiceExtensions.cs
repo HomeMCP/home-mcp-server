@@ -3,6 +3,7 @@ using HomeMcp.Application.Orchestration;
 using HomeMcp.Application.Plugins;
 using HomeMcp.Domain.Devices;
 using HomeMcp.Domain.Memory;
+using HomeMcp.Domain.Plugins;
 using HomeMcp.Domain.Sessions;
 using HomeMcp.Domain.Users;
 using HomeMcp.Infrastructure.LlmClient;
@@ -36,6 +37,7 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<IUserRepository, SqliteUserRepository>();
         services.AddScoped<IDeviceRepository, SqliteDeviceRepository>();
         services.AddScoped<IFactRepository, SqliteFactRepository>();
+        services.AddScoped<IPluginConfigRepository, SqlitePluginConfigRepository>();
 
         // Unit of Work - Scoped (wraps the scoped DbSession for transactions)
         services.AddScoped<IUnitOfWork, SqliteUnitOfWork>();
@@ -55,7 +57,7 @@ public static class InfrastructureServiceExtensions
         services.AddSingleton<IChatOrchestrator, OllamaChatOrchestrator>();
 
         // Database migrator
-        services.AddSingleton<DatabaseMigrator>(sp =>
+        services.AddSingleton(sp =>
         {
             var logger = sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<DatabaseMigrator>>();
             return new DatabaseMigrator(options.SqliteConnectionString, logger);

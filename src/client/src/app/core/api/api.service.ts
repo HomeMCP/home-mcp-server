@@ -6,6 +6,7 @@ import type {
     HealthStatus,
     LogEntry,
     LogSource,
+    PluginConfigValues,
     PluginInfo,
     SetupInitRequest,
     SetupStatus,
@@ -40,6 +41,11 @@ export class ApiService
     getPlugin(id: string): Observable<PluginInfo>
     {
         return this.http.get<PluginInfo>(`${this.base}/plugins/${id}`);
+    }
+
+    savePluginConfig(id: string, config: PluginConfigValues): Observable<PluginInfo>
+    {
+        return this.http.put<PluginInfo>(`${this.base}/plugins/${id}/config`, { config });
     }
 
     getLogs(source?: LogSource, limit = 100): Observable<LogEntry[]>

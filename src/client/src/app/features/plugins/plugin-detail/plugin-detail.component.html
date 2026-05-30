@@ -116,7 +116,8 @@
                                 </div>
                             }
                             <div class="form-actions">
-                                <button mat-raised-button color="primary" (click)="saveConfig()">
+                                <button mat-raised-button color="primary" (click)="saveConfig()"
+                                    [disabled]="configForm.invalid || saving()">
                                     {{ 'plugins.save' | translate }}
                                 </button>
                             </div>

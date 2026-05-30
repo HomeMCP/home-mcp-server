@@ -23,6 +23,7 @@ export interface HealthStatus
 // ── Plugins ───────────────────────────────────────────────────────────────────
 export type ConfigFieldType = 'text' | 'password' | 'url' | 'integer' | 'boolean' | 'select';
 export type PluginStatus = 'active' | 'inactive' | 'error';
+export type PluginConfigValues = Record<string, string | number | boolean | null>;
 
 export interface ConfigFieldDescriptor
 {
@@ -50,6 +51,7 @@ export interface PluginInfo
     descriptions: Record<string, string>;
     tools: ToolInfo[];
     configSchema: ConfigFieldDescriptor[];
+    configValues: PluginConfigValues;
 }
 
 // ── Logs ──────────────────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ApiService } from '../../../core/api/api.service';
-import type { ConfigFieldDescriptor, PluginInfo } from '../../../core/api/api.types';
+import type { ConfigFieldDescriptor, PluginConfigValues,PluginInfo } from '../../../core/api/api.types';
 import { LocaleService } from '../../../core/services/locale.service';
 
 @Component({
@@ -42,6 +42,7 @@ import { LocaleService } from '../../../core/services/locale.service';
 })
 export class PluginDetailComponent implements OnInit
 {
+    private readonly storedPasswordMarker = '__stored__';
     private readonly route = inject(ActivatedRoute);
     private readonly api = inject(ApiService);
     private readonly fb = inject(FormBuilder);
@@ -49,6 +50,7 @@ export class PluginDetailComponent implements OnInit
 
     readonly loading = signal(true);
     readonly plugin = signal<PluginInfo | null>(null);
+    readonly saving = signal(false);
 
     /** Not readonly — rebuilt when plugin schema loads. */
     configForm: FormGroup = this.fb.group({});
@@ -65,7 +67,7 @@ export class PluginDetailComponent implements OnInit
             next: (p) =>
             {
                 this.plugin.set(p);
-                this.configForm = this.buildConfigForm(p.configSchema);
+                this.configForm = this.buildConfigForm(p.configSchema, p.configValues);
                 this.loading.set(false);
             },
             error: () => this.loading.set(false),
@@ -74,18 +76,66 @@ export class PluginDetailComponent implements OnInit
 
     saveConfig(): void
     {
-        // TODO: wire up PUT /admin/plugins/{id}/config when backend endpoint is added
-        console.warn('Config save not yet implemented:', this.configForm.value);
+        const current = this.plugin();
+        if (!current)
+        {
+            return;
+        }
+
+        if (this.configForm.invalid)
+        {
+            this.configForm.markAllAsTouched();
+            return;
+        }
+
+        const config = this.toConfigValues(this.configForm.value);
+
+        this.saving.set(true);
+        this.api.savePluginConfig(current.id, config).subscribe({
+            next: (updated) =>
+            {
+                this.plugin.set(updated);
+                this.configForm = this.buildConfigForm(updated.configSchema, updated.configValues);
+                this.saving.set(false);
+            },
+            error: () => this.saving.set(false),
+        });
     }
 
-    private buildConfigForm(schema: ConfigFieldDescriptor[]): FormGroup
+    private buildConfigForm(schema: ConfigFieldDescriptor[], values: PluginConfigValues): FormGroup
     {
         const controls: Record<string, FormControl> = {};
         for (const field of schema)
         {
-            const validators = field.required ? [Validators.required] : [];
-            controls[field.key] = new FormControl(field.defaultValue ?? '', validators);
+            let validators = field.required ? [Validators.required] : [];
+            let value = values?.[field.key];
+
+            if (field.type === 'password' && value === this.storedPasswordMarker)
+            {
+                validators = [];
+                value = '';
+            }
+            controls[field.key] = new FormControl(
+                value ?? field.defaultValue ?? '',
+                validators);
         }
         return this.fb.group(controls);
+    }
+
+    private toConfigValues(raw: Record<string, unknown>): PluginConfigValues
+    {
+        const result: PluginConfigValues = {};
+        for (const [key, value] of Object.entries(raw))
+        {
+            if (typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string')
+            {
+                result[key] = value;
+            }
+            else
+            {
+                result[key] = value === null || value === undefined ? null : String(value);
+            }
+        }
+        return result;
     }
 }
