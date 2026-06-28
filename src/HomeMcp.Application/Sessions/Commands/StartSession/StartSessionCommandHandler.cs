@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using HomeMcp.Application.Common;
 using HomeMcp.Application.Common.Errors;
+using HomeMcp.Application.Telemetry;
 using HomeMcp.Domain.Devices;
 using HomeMcp.Domain.Sessions;
 using HomeMcp.Domain.Users;
@@ -72,8 +73,12 @@ public sealed class StartSessionCommandHandler
                 : addResult.Error.ToApplicationError();
         }, ct);
 
-        return saveResult.IsSuccess
-            ? new StartSessionResult(session.Id.Value)
-            : Result.Failure<StartSessionResult, ApplicationError>(saveResult.Error);
+        if (saveResult.IsSuccess)
+        {
+            HomeMcpTelemetry.SessionsStarted.Add(1);
+            return new StartSessionResult(session.Id.Value);
+        }
+
+        return Result.Failure<StartSessionResult, ApplicationError>(saveResult.Error);
     }
 }

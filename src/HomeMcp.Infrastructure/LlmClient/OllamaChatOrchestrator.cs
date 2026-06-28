@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using HomeMcp.Application.Common.Errors;
 using HomeMcp.Application.Orchestration;
 using HomeMcp.Application.Plugins;
+using HomeMcp.Application.Telemetry;
 using HomeMcp.Domain.Plugins;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
@@ -44,6 +46,14 @@ public sealed class OllamaChatOrchestrator : IChatOrchestrator
             var pendingToolCalls = new List<FunctionCallContent>();
             var textAccumulator = new StringBuilder();
 
+            HomeMcpTelemetry.LlmRequests.Add(1);
+            var llmSw = Stopwatch.StartNew();
+
+            using var llmActivity = HomeMcpTelemetry.Activities.StartActivity(
+                "llm.chat",
+                ActivityKind.Client);
+            llmActivity?.SetTag("llm.iteration", iteration);
+
             await foreach (var update in _chatClient.GetStreamingResponseAsync(messages, options, ct))
             {
                 foreach (var content in update.Contents)
@@ -61,6 +71,11 @@ public sealed class OllamaChatOrchestrator : IChatOrchestrator
                     }
                 }
             }
+
+            llmSw.Stop();
+            HomeMcpTelemetry.LlmRequestDuration.Record(llmSw.Elapsed.TotalMilliseconds,
+                new TagList { { "llm.iteration", iteration } });
+            llmActivity?.SetTag("llm.tool_calls_requested", pendingToolCalls.Count);
 
             var assistantContents = new List<AIContent>();
             if (textAccumulator.Length > 0)
@@ -94,10 +109,33 @@ public sealed class OllamaChatOrchestrator : IChatOrchestrator
 
                 yield return new ToolCallStartedEvent(entry.Plugin.Id, call.Name, argsJson);
 
+                HomeMcpTelemetry.ToolCalls.Add(1, new TagList
+                {
+                    { "plugin.id", entry.Plugin.Id },
+                    { "tool.name", call.Name }
+                });
+
+                var toolSw = Stopwatch.StartNew();
+                using var toolActivity = HomeMcpTelemetry.Activities.StartActivity(
+                    "plugin.tool_call",
+                    ActivityKind.Internal);
+                toolActivity?.SetTag("plugin.id", entry.Plugin.Id);
+                toolActivity?.SetTag("tool.name", call.Name);
+
                 var toolResult = await entry.Plugin.ExecuteToolAsync(call.Name, argsJson, ct);
+                toolSw.Stop();
+
+                HomeMcpTelemetry.ToolCallDuration.Record(toolSw.Elapsed.TotalMilliseconds, new TagList
+                {
+                    { "plugin.id", entry.Plugin.Id },
+                    { "tool.name", call.Name }
+                });
+
                 var resultText = toolResult.IsSuccess
                     ? toolResult.Value
                     : $"Error: {toolResult.Error?.Message}";
+
+                toolActivity?.SetTag("tool.success", toolResult.IsSuccess);
 
                 yield return new ToolCallFinishedEvent(entry.Plugin.Id, call.Name, resultText);
 

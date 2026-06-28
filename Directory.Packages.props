@@ -22,6 +22,14 @@
   <ItemGroup>
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.0" />
   </ItemGroup>
+  <!-- OpenTelemetry -->
+  <ItemGroup>
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+  </ItemGroup>
   <!-- gRPC / Protobuf -->
   <ItemGroup>
     <PackageVersion Include="Google.Protobuf" Version="3.35.0" />

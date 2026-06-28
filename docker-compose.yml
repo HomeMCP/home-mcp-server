@@ -21,6 +21,8 @@ services:
       Storage__Sqlite__Path: /app/data/home-mcp.db
       Llm__OllamaUrl: ${OLLAMA_URL:-http://host.docker.internal:11434}
       Llm__ChatModel: ${CHAT_MODEL:-gemma4:26b}
+      # Set OTEL_EXPORTER_OTLP_ENDPOINT to point telemetry at your collector / future dashboard
+      OTEL_SERVICE_NAME: HomeMcp
     volumes:
       - server_data:/app/data
     ports:

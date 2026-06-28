@@ -29,6 +29,8 @@ services:
       # Bind-mounted source on some hosts misses inotify events — poll instead.
       DOTNET_USE_POLLING_FILE_WATCHER: "1"
       DOTNET_WATCH_RESTART_ON_RUDE_EDIT: "1"
+      # Set OTEL_EXPORTER_OTLP_ENDPOINT to point telemetry at your collector / future dashboard
+      OTEL_SERVICE_NAME: HomeMcp
     volumes:
       - ./:/repo
       - nuget_cache:/root/.nuget/packages

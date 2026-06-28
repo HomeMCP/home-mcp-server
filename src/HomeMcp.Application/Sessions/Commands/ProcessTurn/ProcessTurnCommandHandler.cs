@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using HomeMcp.Application.Common;
 using HomeMcp.Application.Common.Errors;
 using HomeMcp.Application.Orchestration;
 using HomeMcp.Application.Plugins;
+using HomeMcp.Application.Telemetry;
 using HomeMcp.Domain.Memory;
 using HomeMcp.Domain.Sessions;
 using HomeMcp.Domain.Sessions.Errors;
@@ -40,11 +42,16 @@ public sealed class ProcessTurnCommandHandler
         ProcessTurnCommand command,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
+        var sw = Stopwatch.StartNew();
+        using var activity = HomeMcpTelemetry.Activities.StartActivity("turn.process", ActivityKind.Internal);
+        activity?.SetTag("session.id", command.SessionId);
+
         var sessionId = SessionId.From(command.SessionId);
         var sessionMaybe = await _sessionRepo.GetByIdAsync(sessionId, ct);
 
         if (sessionMaybe.HasNoValue)
         {
+            activity?.SetStatus(ActivityStatusCode.Error, "session_not_found");
             yield return new TurnErrorEvent(ApplicationError.NotFound("session", command.SessionId));
             yield break;
         }
@@ -53,6 +60,7 @@ public sealed class ProcessTurnCommandHandler
 
         if (string.IsNullOrWhiteSpace(command.UserInput))
         {
+            activity?.SetStatus(ActivityStatusCode.Error, "empty_input");
             yield return new TurnErrorEvent(
                 ApplicationError.Validation(SessionErrors.Codes.EmptyInput, "User input cannot be empty."));
             yield break;
@@ -65,6 +73,9 @@ public sealed class ProcessTurnCommandHandler
         var history = session.GetMessagesAfterSummary()
             .Select(m => new HistoryMessage(m.Role.ToString().ToLowerInvariant(), m.Content, m.ToolCallsJson))
             .ToList();
+
+        activity?.SetTag("turn.history_length", history.Count);
+        activity?.SetTag("turn.plugins_count", plugins.Count);
 
         var context = new OrchestratorContext(systemPrompt, history, command.UserInput, plugins);
 
@@ -85,6 +96,7 @@ public sealed class ProcessTurnCommandHandler
 
         if (userMsgResult.IsFailure || assistantMsgResult.IsFailure)
         {
+            activity?.SetStatus(ActivityStatusCode.Error, "message_creation_failed");
             yield return new TurnErrorEvent(
                 ApplicationError.Validation(MessageErrors.Codes.Invalid, "Could not create message records."));
             yield break;
@@ -114,5 +126,9 @@ public sealed class ProcessTurnCommandHandler
                 ? CSharpFunctionalExtensions.UnitResult.Success<ApplicationError>()
                 : r3.Error.ToApplicationError();
         }, ct);
+
+        sw.Stop();
+        HomeMcpTelemetry.TurnsProcessed.Add(1, new System.Diagnostics.TagList { { "session.id", command.SessionId } });
+        HomeMcpTelemetry.TurnDuration.Record(sw.Elapsed.TotalMilliseconds);
     }
 }
